@@ -31,8 +31,7 @@ Read:
                 Constants.Total += 1
                 Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
             Catch ex As Exception
-                Out(ex.ToString)
-                Out("REQ ERR", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
+                Out("REQ ERR: " & ex.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
             End Try
             Threading.Thread.Sleep(Constants.CurrentConfigurations.IntervalPerThread)
         Next
