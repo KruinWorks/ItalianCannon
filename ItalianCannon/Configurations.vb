@@ -56,6 +56,7 @@
     End Sub
 
     Public Shared Sub WaitEdit()
+        If Constants.CurrentCommandLine.GenConf Then Environment.Exit(0)
         Out("You can now edit the configurations. Press any key to reload.", "CONF")
         Console.ReadKey(True)
         Out("Looping to reload...", "CONF")
