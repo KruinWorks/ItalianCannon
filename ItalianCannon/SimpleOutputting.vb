@@ -2,6 +2,8 @@
 ''' Simple output framework(no)(
 ''' </summary>
 Public Module SOPT
+    Public dpreColor As ConsoleColor
+    Public dbakColor As ConsoleColor
     ''' <summary>
     ''' Output something with prefix added.
     ''' </summary>
@@ -16,8 +18,6 @@ Public Module SOPT
 
         Dim preColor As ConsoleColor
         Dim bakColor As ConsoleColor
-        Dim dpreColor As ConsoleColor = Console.ForegroundColor
-        Dim dbakColor As ConsoleColor = Console.BackgroundColor
         Select Case level
             Case LogLevels.INFO
                 lvlStr = "[INFO]"
