@@ -64,4 +64,4 @@
 | `IntervalPerThread` | 每线程请求间隔时间 |
 | `MaxRequestsPerThread` | 每个线程的最大请求总数 |
 | `UserAgent` | 请求时使用的用户代理 |
-| `AppearsToBeDefault` | **必须修改，**是否为未修改的配置文件 |
+| `AppearsToBeDefault` | 必须修改，是否为未修改的配置文件 |
