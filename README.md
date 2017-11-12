@@ -1,5 +1,8 @@
 # ItalianCannon
-![编译状态](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)
+
+直接下载预编译的程序包：
+
+[![直接下载预编译包](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/api/buildjobs/ugrsklofcp531t16/artifacts/ItalianCannon.zip)
 
 二营长！你他娘的意大利炮呢！
 
