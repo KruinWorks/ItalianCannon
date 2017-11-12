@@ -11,6 +11,11 @@ Public Module SOPT
         'Combination structure:
         '[TIME][LEVEL][MODULE]: text
         '
+        If Constants.CurrentCommandLine.VerboseMode Then
+            Exit Sub
+        End If
+
+
         Dim timeStr As String = GetTimePrefix() '[TIME] prefix, [] included.
         Dim lvlStr As String '[LEVEL] prefix, [] included.
 
@@ -42,8 +47,10 @@ Public Module SOPT
 
         'Apply color and output
         If colorEnabled Then
-            Console.BackgroundColor = bakColor
-            Console.ForegroundColor = preColor
+            If Not Constants.CurrentCommandLine.DisableColor Then
+                Console.BackgroundColor = bakColor
+                Console.ForegroundColor = preColor
+            End If
         End If
         'Output
         If level = LogLevels.EXCEPTION Then
@@ -58,8 +65,10 @@ Public Module SOPT
 
         'Reverse color changes.
         If colorEnabled Then
-            Console.BackgroundColor = dbakColor
-            Console.ForegroundColor = dpreColor
+            If Not Constants.CurrentCommandLine.DisableColor Then
+                Console.BackgroundColor = dbakColor
+                Console.ForegroundColor = dpreColor
+            End If
         End If
     End Sub
     ''' <summary>
