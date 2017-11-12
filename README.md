@@ -1,4 +1,6 @@
 # ItalianCannon
+![编译状态](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)
+
 二营长！你他娘的意大利炮呢！
 
 基于 .NET Core 的简易多线程请求工具，看谁不爽打他付费 CDN（
