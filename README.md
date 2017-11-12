@@ -1,15 +1,41 @@
 # ItalianCannon
 二营长！你他娘的意大利炮呢！
 
-基于 .NET Core.
+基于 .NET Core 的简易多线程请求工具，看谁不爽打他付费 CDN（
 
-简易的多线程工具，看谁不爽打他付费 CDN（
+支持 OS 见[巨硬官方](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md#net-core-20---supported-os-versions)。
 
-运行 `dotnet ItalianCannon.dll` 即可。
+# 运行使用
+
+## 普通操作
+
+*(适用于 RHEL, CentOS, Oracle Linux, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, SLES.)*
+
+配置 .NET Core 运行环境。具体可在[巨硬](https://www.microsoft.com/net)获得详细信息。
+
+获得应用程序源码:
+
+`git clone https://github.com/KruinWorks/ItalianCannon.git`
+
+进入项目文件夹:
+
+`cd ./ItalianCannon/ItalianCannon`
+
+运行 `dotnet run` 即可。
+
+## Arch Linux ~~邪教~~特权
+
+直接安装 `community` 仓库里的 `dotnet-runtime-2.0` 包。
+
+`pacman -Syu dotnet-runtime-2.0`
+
+获得编译好的二进制文件，直接 `dotnet <文件名>` 就好。
+
+## 注意
 
 初次使用会自动创建配置文件，修改配置后确认回车就 OK。
 
-**在运行前，记得把 `AppearsToBeDefault` 修改为 `true`**
+详细配置请参见下方。
 
 # 配置说明
 
@@ -33,4 +59,4 @@
 | `IntervalPerThread` | 每线程请求间隔时间 |
 | `MaxRequestsPerThread` | 每个线程的最大请求总数 |
 | `UserAgent` | 请求时使用的用户代理 |
-| `AppearsToBeDefault` | 是否为未修改的配置文件 |
+| `AppearsToBeDefault` | **必须修改，**是否为未修改的配置文件 |
