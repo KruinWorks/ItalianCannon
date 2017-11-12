@@ -2,9 +2,9 @@ Module Program
     Sub Main(args As String())
         'No arguments specified
         Console.WriteLine(Constants.ASCIIART)
-        Out("ItalianCannon version " & Constants.AppVer)
+        Out("ItalianCannon version " & Constants.AppVer, , , False)
         Configurations.Initiate()
-        Out("Initiating color profiles...")
+        Out("Initiating color profiles...", , , False)
         dpreColor = Console.ForegroundColor
         dbakColor = Console.BackgroundColor
         Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
