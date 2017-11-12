@@ -4,6 +4,9 @@ Module Program
         Console.WriteLine(Constants.ASCIIART)
         Out("ItalianCannon version " & Constants.AppVer)
         Configurations.Initiate()
+        Out("Initiating color profiles...")
+        dpreColor = Console.ForegroundColor
+        dbakColor = Console.BackgroundColor
         Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
         For i = 1 To Constants.CurrentConfigurations.Threads
