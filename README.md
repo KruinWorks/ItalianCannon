@@ -4,6 +4,8 @@
 
 [![直接下载预编译包](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/api/projects/Elepover/ItalianCannon/artifacts/ItalianCannon.zip)
 
+CI: https://ci.appveyor.com/project/Elepover/italiancannon
+
 二营长！你他娘的意大利炮呢！
 
 基于 .NET Core 的简易多线程请求工具，看谁不爽打他付费 CDN（
