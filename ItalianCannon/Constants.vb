@@ -38,7 +38,7 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' <summary>
     ''' Application version
     ''' </summary>
-    Public Const AppVer As String = "1.0.0-bt-b1"
+    Public Const AppVer As String = "1.0.1-bt-b15"
     ''' <summary>
     ''' Appliation configuration file's name.
     ''' </summary>
