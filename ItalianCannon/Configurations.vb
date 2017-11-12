@@ -57,6 +57,10 @@
 
     Public Shared Sub WaitEdit()
         If Constants.CurrentCommandLine.GenConf Then Environment.Exit(0)
+                If Constants.CurrentCommandLine.VerboseMode Then
+                    Console.WriteLine("Please change the configurations and try again.")
+                    Environment.Exit(0)
+                End If
         Out("You can now edit the configurations. Press any key to reload.", "CONF")
         Console.ReadKey(True)
         Out("Looping to reload...", "CONF")
