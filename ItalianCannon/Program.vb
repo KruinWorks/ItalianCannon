@@ -22,7 +22,8 @@ Read:
         Constants.ThrId += 1
         Dim ThrId As Integer = Constants.ThrId
         Out("Starting...", "THR" & ThrId)
-        For i = 1 To Constants.CurrentConfigurations.MaxRequestsPerThread Step 1
+        Dim i As Long = 1
+        Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
                 Dim client As New Net.WebClient()
                 client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
@@ -34,7 +35,8 @@ Read:
                 Out("REQ ERR: " & ex.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
             End Try
             Threading.Thread.Sleep(Constants.CurrentConfigurations.IntervalPerThread)
-        Next
+            i += 1
+        Loop
         Out("Max requests limit exceeded. Stopped.", Constants.SW.Elapsed.ToString & "/" & Constants.CurrentConfigurations.MaxRequestsPerThread & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
     End Sub
 End Module
