@@ -3,10 +3,10 @@ Module Program
         'No arguments specified
         Console.WriteLine(Constants.ASCIIART)
         Out("ItalianCannon version " & Constants.AppVer, , , False)
-        Configurations.Initiate()
         Out("Initiating color profiles...", , , False)
         dpreColor = Console.ForegroundColor
         dbakColor = Console.BackgroundColor
+        Configurations.Initiate()
         Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
         For i = 1 To Constants.CurrentConfigurations.Threads
