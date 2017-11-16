@@ -68,11 +68,11 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     ''' <returns></returns>
     Public Shared Property Total As UInt64 = 0
-	''' <summary>
-	''' Requests with 4xx/5xx responses. Or just timed out.
-	''' </summary>
-	''' <returns></returns>
-	Public Shared Property TotalFail As UInt64 = 0
+    ''' <summary>
+    ''' Requests with 4xx/5xx responses. Or just timed out.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property TotalFail As UInt64 = 0
     ''' <summary>
     ''' Attack stopwatch.
     ''' </summary>
@@ -110,22 +110,22 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
         ''' </summary>
         ''' <returns></returns>
         Public Property DisableColor As Boolean
-		''' <summary>
+        ''' <summary>
         ''' Enable animations. Animation bar will ignore -v option.
-		''' -a option will disable per-thread outputs.
-		''' Like:
-		''' [###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
+        ''' -a option will disable per-thread outputs.
+        ''' Like:
+        ''' [###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         ''' Usage: -a
         ''' </summary>
         ''' <returns></returns>
-		Public Property AnimationsEnabled As Boolean
+        Public Property AnimationsEnabled As Boolean
         Sub New()
             VerboseMode = False
             NoSingleThrLimit = False
             GenConf = False
             DisplayHelp = False
             DisableColor = False
-			AnimationsEnabled = False
+            AnimationsEnabled = False
         End Sub
     End Class
 End Class

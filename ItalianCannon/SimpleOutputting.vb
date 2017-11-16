@@ -12,7 +12,7 @@ Public Module SOPT
         '[TIME][LEVEL][MODULE]: text
         '
         If Constants.CurrentCommandLine.VerboseMode Then Exit Sub
-		If Constants.CurrentCommandLine.AnimationsEnabled Then Exit Sub
+        If Constants.CurrentCommandLine.AnimationsEnabled Then Exit Sub
 
 
         Dim timeStr As String = GetTimePrefix() '[TIME] prefix, [] included.
