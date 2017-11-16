@@ -23,22 +23,25 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' <summary>
     ''' Help text for --help argument.
     ''' </summary>
-    Public Const CommandLineHelp As String = "ItalianCannon Commandline Help
--v           Verbose mode, outputs nothing.
--c           Ignore single-thread requests limit.
-             *Equals to 'MaxRequestsPerThread = 0' in the conf. file.
--g           Disable color-ized console output.
---help       Display this help message and exit.
-             *-v will be ignored.
---genconf    Generate configurations file and exit.
-             *If a conf. file doesn't exist or is invalid.
-             *If --help specified at the same time, it will be ignored.
+    Public Const CommandLineHelp As String = "  ItalianCannon Commandline Help
+  -v           Verbose mode, outputs nothing.
+  -c           Ignore single-thread requests limit.
+               *Equals to 'MaxRequestsPerThread = 0' in the conf. file.
+  -g           Disable color-ized console output.
+  -a           Enable animations.
+               *Animation output bar will ignore -v option if specified.
+			   *This option will also disable per-thread outputs.
+  --help       Display this help message and exit.
+               *-v will be ignored.
+  --genconf    Generate configurations file and exit.
+               *If a conf. file doesn't exist or is invalid.
+               *If --help specified at the same time, it will be ignored.
 
-[i] All the arguments are not case-sensitive."
+  [i] All the arguments are not case-sensitive."
     ''' <summary>
     ''' Application version
     ''' </summary>
-    Public Const AppVer As String = "1.0.1-bt-b15"
+    Public Const AppVer As String = "1.0.2-bt-b17"
     ''' <summary>
     ''' Appliation configuration file's name.
     ''' </summary>
@@ -64,6 +67,11 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     ''' <returns></returns>
     Public Shared Property Total As UInt64 = 0
+	''' <summary>
+	''' Requests with 4xx/5xx responses. Or just timed out.
+	''' </summary>
+	''' <returns></returns>
+	Public Shared Property TotalFail As UInt64 = 0
     ''' <summary>
     ''' Attack stopwatch.
     ''' </summary>
@@ -101,12 +109,22 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
         ''' </summary>
         ''' <returns></returns>
         Public Property DisableColor As Boolean
+		''' <summary>
+        ''' Enable animations. Animation bar will ignore -v option.
+		''' -a option will disable per-thread outputs.
+		''' Like:
+		''' [###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
+        ''' Usage: -a
+        ''' </summary>
+        ''' <returns></returns>
+		Public Property AnimationsEnabled As Boolean
         Sub New()
             VerboseMode = False
             NoSingleThrLimit = False
             GenConf = False
             DisplayHelp = False
             DisableColor = False
+			AnimationsEnabled = False
         End Sub
     End Class
 End Class
