@@ -82,14 +82,27 @@ Read:
 					Console.Write(vbBack)
 				Next
 			End If
-			Dim str As String = ""
-			str &= GetAnimationChar(count Mod 13)
-			str &= "[" & Constants.SW.Elapsed.ToString & "]"
-			str &= "[" & Constants.ThrId & "/" & Constants.CurrentConfigurations.Threads & "THR]"
-			str &= "[" & Constants.Total & "TS/" & Constants.TotalFail & "FL]"
-			str &= "[MAX" & Constants.CurrentConfigurations.MaxRequestsPerThread & "]"
-			Console.Write(str)
-			prevLength = str.Length 'Set length for next deletion.
+			'Backup color
+			Dim prevFore As ConsoleColor = Console.ForegroundColor
+			Dim max As String = Constants.CurrentConfigurations.MaxRequestsPerThread
+			If max = 0 Then max = vbBack & vbBack & vbBack & "UNLIMITED"
+			Dim sb1 As String = GetAnimationChar(count Mod 13)
+			Dim sb2 As String = "[" & Constants.SW.Elapsed.ToString & "]"
+			Dim sb3 As String = "[" & Constants.ThrId & "/" & Constants.CurrentConfigurations.Threads & "THR]"
+			Dim sb4 As String = "[" & Constants.Total & "TS/" & Constants.TotalFail & "FL]"
+			Dim sb5 As String = "[MAX" & max & "]"
+			Console.ForegroundColor = ConsoleColor.Yellow
+			Console.Write(sb1)
+			Console.ForegroundColor = ConsoleColor.Green
+			Console.Write(sb2)
+			Console.ForegroundColor = ConsoleColor.Cyan
+			Console.Write(sb3)
+			Console.ForegroundColor = ConsoleColor.White
+			Console.Write(sb4)
+			Console.ForegroundColor = ConsoleColor.Red
+			Console.Write(sb5)
+			Console.ForegroundColor = prevFore 'Trash code #2nd.
+			prevLength = (sb1 & sb2 & sb3 & sb4 & sb5).Length 'Set length for next deletion.
 			count += 1
 			Threading.Thread.Sleep(250)
 		Loop
@@ -101,31 +114,31 @@ Read:
 	''' </summary>
 	''' <returns></returns>
 	Function GetAnimationChar(percentage As Integer) As String
-		Select Case percentage
+		Select Case percentage 'Trash code #1st.
 			Case 0
-				Return "[#         ]"
+				Return "[*         ]"
 			Case 1
-				Return "[##        ]"
+				Return "[**        ]"
 			Case 2
-				Return "[###       ]"
+				Return "[***       ]"
 			Case 3
-				Return "[ ###      ]"
+				Return "[ ***      ]"
 			Case 4
-				Return "[  ###     ]"
+				Return "[  ***     ]"
 			Case 5
-				Return "[   ###    ]"
+				Return "[   ***    ]"
 			Case 6
-				Return "[    ###   ]"
+				Return "[    ***   ]"
 			Case 7
-				Return "[     ###  ]"
+				Return "[     ***  ]"
 			Case 8
-				Return "[      ### ]"
+				Return "[      *** ]"
 			Case 9
-				Return "[       ###]"
+				Return "[       ***]"
 			Case 10
-				Return "[        ##]"
+				Return "[        **]"
 			Case 11
-				Return "[         #]"
+				Return "[         *]"
 			Case Else
 				Return "[          ]"
 		End Select

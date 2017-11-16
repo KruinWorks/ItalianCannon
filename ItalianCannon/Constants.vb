@@ -25,17 +25,18 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     Public Const CommandLineHelp As String = "  ItalianCannon Commandline Help
   -v           Verbose mode, outputs nothing.
+                 *-a, --help options will ignore it.
   -c           Ignore single-thread requests limit.
-               *Equals to 'MaxRequestsPerThread = 0' in the conf. file.
+                 *Equals to 'MaxRequestsPerThread = 0' in the conf. file.
   -g           Disable color-ized console output.
   -a           Enable animations.
-               *Animation output bar will ignore -v option if specified.
-			   *This option will also disable per-thread outputs.
+                 *Animation output bar will ignore -v and -g option if specified.
+                 *This option will also disable per-thread outputs.
   --help       Display this help message and exit.
-               *-v will be ignored.
+                 *-v will be ignored.
   --genconf    Generate configurations file and exit.
-               *If a conf. file doesn't exist or is invalid.
-               *If --help specified at the same time, it will be ignored.
+                 *If a conf. file doesn't exist or is invalid.
+                 *If --help specified at the same time, it will be ignored.
 
   [i] All the arguments are not case-sensitive."
     ''' <summary>
