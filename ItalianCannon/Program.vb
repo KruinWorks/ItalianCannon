@@ -1,23 +1,16 @@
 Module Program
     Sub Main(args As String())
         'Arguments specified
-        If Not args.Count = 0 Then
-            ResolveArguments(args)
+        ResolveArguments(args)
             'Read resolved arguments
             If Constants.CurrentCommandLine.GenConf Then
                 Configurations.Initiate()
                 Environment.Exit(0)
             End If
-            If Constants.CurrentCommandLine.DisplayHelp Then
-                Console.WriteLine(Constants.CommandLineHelp)
-                Environment.Exit(0)
-            End If
-            If Constants.CurrentCommandLine.AnimationsEnabled Then
-                Dim thrAnimations As New Threading.Thread(AddressOf ThreadAnimations)
-                thrAnimations.Start()
-            End If
+        If Constants.CurrentCommandLine.DisplayHelp Then
+            Console.WriteLine(Constants.CommandLineHelp)
+            Environment.Exit(0)
         End If
-
         'Proceed other stuff.
         If Not Constants.CurrentCommandLine.VerboseMode Then Console.WriteLine(Constants.ASCIIART)
         Out("ItalianCannon version " & Constants.AppVer, , , False)
@@ -28,6 +21,11 @@ Module Program
         'Apply -c.
         If Constants.CurrentCommandLine.NoSingleThrLimit Then
             Constants.CurrentConfigurations.MaxRequestsPerThread = 0
+        End If
+        'Apply -a
+        If Constants.CurrentCommandLine.AnimationsEnabled Then
+            Dim thrAnimations As New Threading.Thread(AddressOf ThreadAnimations)
+            thrAnimations.Start()
         End If
         Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
@@ -67,7 +65,7 @@ Read:
         Out("Max requests limit exceeded. Stopped.", Constants.SW.Elapsed.ToString & "/" & Constants.CurrentConfigurations.MaxRequestsPerThread & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
         If Constants.CurrentCommandLine.AnimationsEnabled Then Constants.ThrId -= 1
     End Sub
-    
+
     Sub ThreadAnimations()
         '[###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         Dim count As UInt64 = 0

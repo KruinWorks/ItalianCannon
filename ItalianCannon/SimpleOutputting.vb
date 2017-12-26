@@ -7,13 +7,14 @@ Public Module SOPT
     ''' <summary>
     ''' Output something with prefix added.
     ''' </summary>
-    Public Sub Out(text As String, Optional sourceModule As String = "MAIN", Optional level As LogLevels = LogLevels.INFO, Optional colorEnabled As Boolean = True)
+    Public Sub Out(text As String, Optional sourceModule As String = "MAIN", Optional level As LogLevels = LogLevels.INFO, Optional colorEnabled As Boolean = True, Optional IgnoreAnimations As Boolean = False)
         'Combination structure:
         '[TIME][LEVEL][MODULE]: text
         '
         If Constants.CurrentCommandLine.VerboseMode Then Exit Sub
-        If Constants.CurrentCommandLine.AnimationsEnabled Then Exit Sub
-
+        If IgnoreAnimations = False Then
+            If Constants.CurrentCommandLine.AnimationsEnabled Then Exit Sub
+        End If
 
         Dim timeStr As String = GetTimePrefix() '[TIME] prefix, [] included.
         Dim lvlStr As String '[LEVEL] prefix, [] included.

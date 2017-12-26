@@ -21,7 +21,7 @@
         'Find file, if does not exist, create one.
         Out("Loading configurations...", "CONF")
         If Not IO.File.Exists(Constants.ConfFile) Then
-            Out("Configurations file not found. Creating a new one.", "CONF", LogLevels.WARN)
+            Out("Configurations file not found. Creating a new one.", "CONF", LogLevels.WARN,, True)
             Constants.CurrentConfigurations = New ConfObj
             SaveConf()
             WaitEdit() 'Wait for edit then reload and exit.
@@ -29,13 +29,13 @@
             Try
                 ReadConf()
                 If Constants.CurrentConfigurations.AppearsToBeDefault Then
-                    Out("Configurations appear to be default.", "CONF", LogLevels.WARN)
+                    Out("Configurations appear to be default.", "CONF", LogLevels.WARN,, True)
                     WaitEdit() 'Wait for edit then reload and exit.
                     Exit Sub 'Since the waitedit sub itself will output a "Complete", so I just let it "go".
                 End If
                 Out("Complete.", "CONF")
             Catch ex As Exception
-                Out("Cannot read configuration: " & ex.ToString, "CONF", LogLevels.EXCEPTION)
+                Out("Cannot read configuration: " & ex.ToString, "CONF", LogLevels.EXCEPTION,, True)
                 Environment.Exit(1)
             End Try
         End If
@@ -57,13 +57,13 @@
 
     Public Shared Sub WaitEdit()
         If Constants.CurrentCommandLine.GenConf Then Environment.Exit(0)
-                If Constants.CurrentCommandLine.VerboseMode Then
-                    Console.WriteLine("Please change the configurations and try again.")
-                    Environment.Exit(0)
-                End If
-        Out("You can now edit the configurations. Press any key to reload.", "CONF")
+        If Constants.CurrentCommandLine.VerboseMode Then
+            Console.WriteLine("Please change the configurations and try again.")
+            Environment.Exit(0)
+        End If
+        Out("You can now edit the configurations. Press any key to reload.", "CONF",,, True)
         Console.ReadKey(True)
-        Out("Looping to reload...", "CONF")
+        Out("Looping to reload...", "CONF",,, True)
         Initiate()
     End Sub
 End Class
