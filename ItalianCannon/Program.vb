@@ -69,18 +69,17 @@ Read:
     Sub ThreadAnimations()
         '[###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         Dim count As UInt64 = 0
-        Dim prevLength As Short = 0
         Console.Write("Starting...")
         Threading.Thread.Sleep(1000)
         For i = 1 To 11 Step 1
             Console.Write(vbBack)
         Next
         Do Until 233 = 2333
-            If Not prevLength = 0 Then 'If not first time, check and delete.
-                For i = 0 To prevLength
-                    Console.Write(vbBack)
-                Next
-            End If
+            'Updated clearing current line method.
+            Dim cLine As Integer = Console.CursorTop
+            Console.SetCursorPosition(0, Console.CursorTop)
+            Console.Write(New String(" ", Console.WindowWidth))
+            Console.SetCursorPosition(0, cLine)
             'Backup color
             Dim prevFore As ConsoleColor = Console.ForegroundColor
             Dim max As String = Constants.CurrentConfigurations.MaxRequestsPerThread
@@ -113,7 +112,6 @@ Read:
             Console.ForegroundColor = ConsoleColor.Magenta
             Console.Write(sb6)
             Console.ForegroundColor = prevFore 'Trash code #2nd.
-            prevLength = (sb0 & sb1 & sb2 & sb3 & sb4 & sb5 & sb6).Length 'Set length for next deletion.
             count += 1
             Threading.Thread.Sleep(250)
         Loop
