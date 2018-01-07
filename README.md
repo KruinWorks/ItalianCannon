@@ -1,50 +1,50 @@
 # ItalianCannon
 
-直接下载预编译的程序包：
-
-[![直接下载预编译包](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/api/projects/Elepover/ItalianCannon/artifacts/ItalianCannon.zip)
+Download pre-compiled package: [![Download Directly](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/api/projects/Elepover/ItalianCannon/artifacts/ItalianCannon.zip)
 
 CI: https://ci.appveyor.com/project/Elepover/italiancannon
 
-二营长！你他娘的意大利炮呢！
+A simple multithreading web resource request tool. Based on .NET Core.
 
-基于 .NET Core 的简易多线程请求工具，看谁不爽打他付费 CDN（
+Supported OS: [See Microsoft Official](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md#net-core-20---supported-os-versions).
 
-支持 OS 见[巨硬官方](https://github.com/dotnet/core/blob/master/release-notes/2.0/2.0-supported-os.md#net-core-20---supported-os-versions)。
+# Runtime
 
-# 运行使用
+## Ordinary
 
-## 普通操作
+*(Suitable for RHEL, CentOS, Oracle Linux, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, SLES.)*
 
-*(适用于 RHEL, CentOS, Oracle Linux, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, SLES.)*
+Configure .NET Core SDK.
 
-配置 .NET Core 运行环境。具体可在[巨硬](https://www.microsoft.com/net)获得详细信息。
+Details could be found on [Microsoft Official](https://www.microsoft.com/net).
 
-获得应用程序源码:
+Get application source code: 
 
 `git clone https://github.com/KruinWorks/ItalianCannon.git`
 
-进入项目文件夹:
+Enter project directory: 
 
 `cd ./ItalianCannon/ItalianCannon`
 
-运行 `dotnet run` 即可。
+Just run `dotnet run` directly and... There you go!
 
-## Arch Linux ~~邪教~~特权
+## Arch Linux Special
 
-直接安装 `community` 仓库里的 `dotnet-runtime-2.0` 包。
+Directly install the `dotnet-runtime-2.0` package in `community` repository.
 
 `pacman -Syu dotnet-runtime-2.0`
 
-获得编译好的二进制文件，直接 `dotnet <文件名>` 就好。
+Get the pre-compiled binary file, then run `dotnet <filename>` and it's done.
 
-## 注意
+## Notice
 
-初次使用会自动创建配置文件，修改配置后确认回车就 OK。
+On the first use, it will ask you to edit the default configurations.
 
-详细配置请参见下方。
+When you're done, press Enter to continue.
 
-# 配置说明
+Details could be found below.
+
+# Configurations
 
 ```
 {
@@ -58,32 +58,32 @@ CI: https://ci.appveyor.com/project/Elepover/italiancannon
 }
 ```
 
-| 名称 | 内容 |
+| Name | Description |
 | :----- | -----: |
-| `Note` | 注释，应用程序会忽略此项目 |
-| `TeaCupTarget` | ~~喝茶~~目标 |
-| `Threads` | 线程数量 |
-| `IntervalPerThread` | 每线程请求间隔时间 |
-| `MaxRequestsPerThread` | 每个线程的最大请求总数 |
-| `UserAgent` | 请求时使用的用户代理 |
-| `AppearsToBeDefault` | 必须修改，是否为未修改的配置文件 |
+| `Note` | The description. Doesn't have any use. |
+| `TeaCupTarget` | Request target. |
+| `Threads` | Quantity of threads. |
+| `IntervalPerThread` | Request interval of each thread. |
+| `MaxRequestsPerThread` | Maximum request count of each thread. |
+| `UserAgent` | User agent. |
+| `AppearsToBeDefault` | MUST be edited to false. |
 
-# 命令行参数
+# CLI options
 
 ```
-  -v           静默模式，不输出任何内容。
-                 *-a, --help 参数会无视此选项。
-  -c           忽略单线程最大请求数限制。
-                 *相当于在配置文件中写入 'MaxRequestsPerThread = 0'
-  -g           关闭带颜色的控制台输出。
-  -a           启用动画。
-                 *输出动画栏会无视 -v 和 -g 选项，即使已经指定。
-                 *此选项会同时屏蔽每个独立线程的输出。
-  --help       显示帮助信息后退出。
-                 *-v 选项将被无视。
-  --genconf    生成配置文件，并退出。
-                 *除非配置文件不存在或者存在错误，否则程序不会修改配置文件。
-                 *本参数优先级高于 --help 参数，如果同时指定，将被忽略。
+  -v           Silent mode, outputs nothing.
+                 *-a, --help arguments will ignore this option.
+  -c           Ignore per-thread request limit.
+                 *Equals to setting 'MaxRequestsPerThread = 0'
+  -g           Disable colorized output.
+  -a           Enable animations.
+                 *Will ignore -v and -g options, even though set.
+                 *This option will ignore per-thread outputs.
+  --help       Display help information, and exit.
+                 *-v option will be ignored.
+  --genconf    Generate configurations file, and exit.
+                 *Unless no configurations file found or configurations file is corrupted, no change will be applied.
+                 *Its priority is higher than --help option.
 ```
 
- 所有命令行选项均不大小写敏感。
+ All CLI options were not case-sensitive.

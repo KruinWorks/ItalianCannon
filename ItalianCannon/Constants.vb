@@ -77,6 +77,21 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     ''' <returns></returns>
     Public Shared Property SW As New Stopwatch
+    ''' <summary>
+    ''' Total downloaded. Measured as "bytes".
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property TotalDownloaded As ULong = 0
+    ''' <summary>
+    ''' Download delta.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property DLDelta As Single = 0
+    ''' <summary>
+    ''' Download speed output string.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property DLSpeed As String = "[?]"
 
     Public Class CommandLineOptions
         ''' <summary>

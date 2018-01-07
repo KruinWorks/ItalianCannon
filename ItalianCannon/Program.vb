@@ -26,6 +26,8 @@ Module Program
         If Constants.CurrentCommandLine.AnimationsEnabled Then
             Dim thrAnimations As New Threading.Thread(AddressOf ThreadAnimations)
             thrAnimations.Start()
+            Dim thrSpeed As New Threading.Thread(AddressOf ThreadSpeedCalc)
+            thrSpeed.Start()
         End If
         Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
@@ -51,7 +53,8 @@ Read:
             Try
                 Dim client As New Net.WebClient()
                 client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
-                client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget)
+                Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
+                Constants.TotalDownloaded += Size
                 client.Dispose()
                 Constants.Total += 1
                 Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
@@ -66,6 +69,20 @@ Read:
         If Constants.CurrentCommandLine.AnimationsEnabled Then Constants.ThrId -= 1
     End Sub
 
+    Sub ThreadSpeedCalc()
+        Constants.DLSpeed = "[Pending...]"
+        Dim PrevDL As ULong = Constants.TotalDownloaded
+        Threading.Thread.Sleep(1000)
+        Do Until 233 = 2333
+            Constants.DLDelta = Constants.TotalDownloaded - PrevDL
+            'Judge size unit.
+            Dim Speed As String = "[" & JudgeSizeUnit(Constants.DLDelta * 2) & "/s / " & JudgeSizeUnit(Constants.TotalDownloaded) & "]"
+            Constants.DLSpeed = Speed
+            PrevDL = Constants.TotalDownloaded
+            Threading.Thread.Sleep(500)
+        Loop
+    End Sub
+
     Sub ThreadAnimations()
         '[###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         Dim count As UInt64 = 0
@@ -75,11 +92,8 @@ Read:
             Console.Write(vbBack)
         Next
         Do Until 233 = 2333
-            'Updated clearing current line method.
-            Dim cLine As Integer = Console.CursorTop
-            Console.SetCursorPosition(0, Console.CursorTop)
-            Console.Write(New String(" ", Console.WindowWidth))
-            Console.SetCursorPosition(0, cLine)
+            'Console overflow.
+            Dim overflow As Boolean = False
             'Backup color
             Dim prevFore As ConsoleColor = Console.ForegroundColor
             Dim max As String = Constants.CurrentConfigurations.MaxRequestsPerThread
@@ -90,12 +104,29 @@ Read:
             Dim sb3 As String = "[" & Constants.ThrId & "/" & Constants.CurrentConfigurations.Threads & "THR]"
             Dim sb4 As String = "[" & Constants.Total & "TS/" & Constants.TotalFail & "FL]"
             Dim sb5 As String = "[MAX" & max & "]"
-            Dim sb6 As String = ""
+            Dim sb6 As String = Constants.DLSpeed
+            Dim sb7 As String = ""
             If Constants.ThrId = 0 Then
-                sb6 = "[NO THREADS ALIVE]"
+                sb7 = "[NO THREADS ALIVE]"
                 sb0 = "[!]"
             Else
                 sb0 = GetAnimationBlock(count Mod 8)
+            End If
+            'Preprocessing before console overflow.
+            If ("[OVERFLOW!]" & sb0 & sb1 & sb2 & sb3 & sb4 & sb5 & sb6 & sb7).Length >= Console.WindowWidth
+                overflow = True
+            Else
+                overflow = False
+            End If
+            'And we need to clear the line later to avoid blinking problem.
+            'Updated clearing current line method.
+            Dim cLine As Integer = Console.CursorTop
+            Console.SetCursorPosition(0, Console.CursorTop)
+            Console.Write(New String(" ", Console.WindowWidth))
+            Console.SetCursorPosition(0, cLine)
+            If overflow Then
+                Console.ForegroundColor = ConsoleColor.Red
+                Console.Write("[OVERFLOW!]")
             End If
             Console.ForegroundColor = ConsoleColor.Cyan
             Console.Write(sb0)
@@ -109,8 +140,10 @@ Read:
             Console.Write(sb4)
             Console.ForegroundColor = ConsoleColor.Red
             Console.Write(sb5)
-            Console.ForegroundColor = ConsoleColor.Magenta
+            Console.ForegroundColor = ConsoleColor.White
             Console.Write(sb6)
+            Console.ForegroundColor = ConsoleColor.Magenta
+            Console.Write(sb7)
             Console.ForegroundColor = prevFore 'Trash code #2nd.
             count += 1
             Threading.Thread.Sleep(250)
@@ -217,4 +250,33 @@ Read:
             Constants.CurrentCommandLine.AnimationsEnabled = False
         End If
     End Sub
+
+    Function JudgeSizeUnit(Size As Double) As String
+        Dim SizeUnit As String = "B"
+        If Size >= 1000 Then
+            Size /= 1000
+            SizeUnit = "KiB"
+            If Size >= 1024 Then
+                SizeUnit = "MiB"
+                Size /= 1024
+                If Size >= 1024 Then
+                    SizeUnit = "GiB"
+                    Size /= 1024
+                    If Size >= 1024 Then
+                        SizeUnit = "TiB"
+                        Size /= 1024
+                        If Size >= 1024 Then
+                            SizeUnit = "PiB"
+                            Size /= 1024
+                            If Size >= 1024 Then
+                                SizeUnit = "EiB"
+                                Size /= 1024
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        End If
+        Return Math.Round(Size, 2) & SizeUnit
+    End Function
 End Module
