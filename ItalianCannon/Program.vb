@@ -55,11 +55,11 @@ Read:
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
-				Dim client As New Net.WebClient()
-                client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
-                Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
-                Constants.TotalDownloaded += Size
-                client.Dispose()
+				Using client As New Net.WebClient()
+                    client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
+                    Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
+                    Constants.TotalDownloaded += Size
+                End Using
                 Constants.Total += 1
                 Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
             Catch sEx As System.Net.WebException 'Proceed server-side errors (4xx / 5xx)
@@ -67,6 +67,7 @@ Read:
 				If sEx.Status = System.Net.WebExceptionStatus.ProtocolError Then
                     RCode = CType(sEx.Response, System.Net.HttpWebResponse).StatusCode
                 End If
+                Constants.Total += 1
                 Out("REQ HOK: HTTP/" & RCode, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
 			Catch ex As Exception
                 Constants.TotalFail += 1
