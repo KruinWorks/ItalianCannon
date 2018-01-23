@@ -1,3 +1,5 @@
+Imports System.Security.Cryptography.X509Certificates
+
 Module Program
     Sub Main(args As String())
         'Arguments specified
@@ -29,7 +31,9 @@ Module Program
             Dim thrSpeed As New Threading.Thread(AddressOf ThreadSpeedCalc)
             thrSpeed.Start()
         End If
-        Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
+        'Ignore invalid SSL Certificates.
+        System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
+		Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
         For i = 1 To Constants.CurrentConfigurations.Threads
             Dim thread As New Threading.Thread(AddressOf ThreadRun)
@@ -51,14 +55,20 @@ Read:
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
-                Dim client As New Net.WebClient()
+				Dim client As New Net.WebClient()
                 client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
                 Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
                 Constants.TotalDownloaded += Size
                 client.Dispose()
                 Constants.Total += 1
                 Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
-            Catch ex As Exception
+            Catch sEx As System.Net.WebException 'Proceed server-side errors (4xx / 5xx)
+                Dim RCode As Short
+				If sEx.Status = System.Net.WebExceptionStatus.ProtocolError Then
+                    RCode = CType(sEx.Response, System.Net.HttpWebResponse).StatusCode
+                End If
+                Out("REQ HOK: HTTP/" & RCode, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
+			Catch ex As Exception
                 Constants.TotalFail += 1
                 Out("REQ ERR: " & ex.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
             End Try
@@ -86,12 +96,18 @@ Read:
     Sub ThreadAnimations()
         '[###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         Dim count As UInt64 = 0
+        Dim prevLength As Short = 0
         Console.Write("Starting...")
         Threading.Thread.Sleep(1000)
         For i = 1 To 11 Step 1
             Console.Write(vbBack)
         Next
         Do Until 233 = 2333
+            If Not prevLength = 0 Then 'If not first time, check and delete.
+                For i = 0 To prevLength
+                    Console.Write(vbBack)
+                Next
+            End If
             'Console overflow.
             Dim overflow As Boolean = False
             'Backup color
@@ -106,6 +122,7 @@ Read:
             Dim sb5 As String = "[MAX" & max & "]"
             Dim sb6 As String = Constants.DLSpeed
             Dim sb7 As String = ""
+            Dim sb8 As String = "     " 'Clearing.
             If Constants.ThrId = 0 Then
                 sb7 = "[NO THREADS ALIVE]"
                 sb0 = "[!]"
@@ -113,17 +130,12 @@ Read:
                 sb0 = GetAnimationBlock(count Mod 8)
             End If
             'Preprocessing before console overflow.
-            If ("[OVERFLOW!]" & sb0 & sb1 & sb2 & sb3 & sb4 & sb5 & sb6 & sb7).Length >= Console.WindowWidth
+            If ("[OVERFLOW!]" & sb0 & sb1 & sb2 & sb3 & sb4 & sb5 & sb6 & sb7 & sb8).Length >= Console.WindowWidth
                 overflow = True
             Else
                 overflow = False
             End If
-            'And we need to clear the line later to avoid blinking problem.
-            'Updated clearing current line method.
-            Dim cLine As Integer = Console.CursorTop
-            Console.SetCursorPosition(0, Console.CursorTop)
-            Console.Write(New String(" ", Console.WindowWidth))
-            Console.SetCursorPosition(0, cLine)
+            prevLength = (sb0 & sb1 & sb2 & sb3 & sb4 & sb5 & sb6 & sb7 & sb8).Length 'Set length for next deletion.
             If overflow Then
                 Console.ForegroundColor = ConsoleColor.Red
                 Console.Write("[OVERFLOW!]")
@@ -145,6 +157,7 @@ Read:
             Console.ForegroundColor = ConsoleColor.Magenta
             Console.Write(sb7)
             Console.ForegroundColor = prevFore 'Trash code #2nd.
+            Console.Write(sb8)
             count += 1
             Threading.Thread.Sleep(250)
         Loop
@@ -278,5 +291,10 @@ Read:
             End If
         End If
         Return Math.Round(Size, 2) & SizeUnit
+    End Function
+
+    'Callback of ignorance of invalid ssl certificates.
+    Function FakeCertCallBack(ByVal Sender As Object, ByVal Cert As X509Certificate, ByVal Chain As X509Chain, ByVal [error] As System.Net.Security.SslPolicyErrors) As Boolean
+        Return True
     End Function
 End Module
