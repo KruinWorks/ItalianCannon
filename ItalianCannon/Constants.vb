@@ -41,7 +41,7 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' <summary>
     ''' Application version
     ''' </summary>
-    Public Const AppVer As String = "1.0.5-rs-b20"
+    Public Const AppVer As String = "1.0.6-rs-b24"
     ''' <summary>
     ''' Appliation configuration file's name.
     ''' </summary>

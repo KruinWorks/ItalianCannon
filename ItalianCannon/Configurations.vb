@@ -7,16 +7,34 @@
         Public MaxRequestsPerThread As Long
         Public UserAgent As String
         Public AppearsToBeDefault As Boolean
+        Public DisableSSLValidation As Boolean
+        Public IgnoreHTTPError As Boolean
+        Public ExtraHTTPHeaders As List(Of Header)
         Sub New()
-            Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry."
+            Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs"
             TeaCupTarget = "https://www.baidu.com"
             Threads = 1
             IntervalPerThread = 500
             MaxRequestsPerThread = 1000
             UserAgent = "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33"
             AppearsToBeDefault = True
+            DisableSSLValidation = False
+            IgnoreHTTPError = False
+            Dim SampleHeaderCol As New List(Of Header)
+            SampleHeaderCol.Add(New Header)
+            ExtraHTTPHeaders = SampleHeaderCol
         End Sub
     End Class
+
+    Public Class Header
+        Public HType As System.Net.HttpRequestHeader
+        Public Content As String
+        Sub New()
+            HType = System.Net.HttpRequestHeader.Allow
+            Content = "GET"
+        End Sub
+    End Class
+
     Public Shared Sub Initiate()
         'Find file, if does not exist, create one.
         Out("Loading configurations...", "CONF")

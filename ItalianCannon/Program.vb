@@ -32,8 +32,8 @@ Module Program
             thrSpeed.Start()
         End If
         'Ignore invalid SSL Certificates.
-        System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
-		Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
+        If Constants.CurrentConfigurations.DisableSSLValidation Then System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
+        Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
         Constants.SW.Start()
         For i = 1 To Constants.CurrentConfigurations.Threads
             Dim thread As New Threading.Thread(AddressOf ThreadRun)
@@ -57,14 +57,22 @@ Read:
             Try
 				Using client As New Net.WebClient()
                     client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
+                    For Each tHeader As Configurations.Header In Constants.CurrentConfigurations.ExtraHTTPHeaders
+	                    client.Headers.Add(tHeader.HType, tHeader.Content)
+					Next
                     Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
                     Constants.TotalDownloaded += Size
                 End Using
                 Constants.Total += 1
                 Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
             Catch sEx As System.Net.WebException 'Proceed server-side errors (4xx / 5xx)
+                If Constants.CurrentConfigurations.IgnoreHTTPError = False Then
+                    Constants.TotalFail += 1
+                    Out("REQ ERR: " & sEx.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
+                    Exit Try
+                End If
                 Dim RCode As Short
-				If sEx.Status = System.Net.WebExceptionStatus.ProtocolError Then
+                If sEx.Status = System.Net.WebExceptionStatus.ProtocolError Then
                     RCode = CType(sEx.Response, System.Net.HttpWebResponse).StatusCode
                 End If
                 Constants.Total += 1
