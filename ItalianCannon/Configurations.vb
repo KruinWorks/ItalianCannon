@@ -10,6 +10,9 @@
         Public DisableSSLValidation As Boolean
         Public IgnoreHTTPError As Boolean
         Public ExtraHTTPHeaders As List(Of Header)
+        Public EnableAnimations As Boolean
+        Public EnableColors As Boolean
+        Public VerboseMode As Boolean
         Sub New()
             Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs"
             TeaCupTarget = "https://www.baidu.com"
@@ -23,6 +26,9 @@
             Dim SampleHeaderCol As New List(Of Header)
             SampleHeaderCol.Add(New Header)
             ExtraHTTPHeaders = SampleHeaderCol
+            EnableAnimations = False
+            EnableColors = True
+            VerboseMode = False
         End Sub
     End Class
 
@@ -36,20 +42,26 @@
     End Class
 
     Public Shared Sub Initiate()
+        'Use default conf for failsafe.
+        Constants.CurrentConfigurations = New ConfObj()
         'Find file, if does not exist, create one.
         Out("Loading configurations...", "CONF")
         If Not IO.File.Exists(Constants.ConfFile) Then
-            Out("Configurations file not found. Creating a new one.", "CONF", LogLevels.WARN,, True)
+            Out("Configurations file not found. Creating a new one at " & Constants.ConfFile & ".", "CONF", LogLevels.WARN,, True)
             Constants.CurrentConfigurations = New ConfObj
             SaveConf()
-            WaitEdit() 'Wait for edit then reload and exit.
+            WaitEdit() 'Display message and exit.
         Else
             Try
                 ReadConf()
                 If Constants.CurrentConfigurations.AppearsToBeDefault Then
                     Out("Configurations appear to be default.", "CONF", LogLevels.WARN,, True)
-                    WaitEdit() 'Wait for edit then reload and exit.
+                    WaitEdit()
                     Exit Sub 'Since the waitedit sub itself will output a "Complete", so I just let it "go".
+                End If
+                If Not CheckConflictConf() Then
+                    Out("Conflict options detected.", "CONF", LogLevels.EXCEPTION,, True)
+                    Environment.Exit(1)
                 End If
                 Out("Complete.", "CONF")
             Catch ex As Exception
@@ -74,14 +86,12 @@
     End Sub
 
     Public Shared Sub WaitEdit()
-        If Constants.CurrentCommandLine.GenConf Then Environment.Exit(0)
-        If Constants.CurrentCommandLine.VerboseMode Then
-            Console.WriteLine("Please change the configurations and try again.")
-            Environment.Exit(0)
-        End If
-        Out("You can now edit the configurations. Press any key to reload.", "CONF",,, True)
-        Console.ReadKey(True)
-        Out("Looping to reload...", "CONF",,, True)
-        Initiate()
+        Out("Please change the configurations and try again.", "CONF", LogLevels.WARN,, True)
+        Environment.Exit(0)
     End Sub
+
+    Public Shared Function CheckConflictConf() As Boolean
+        If (Constants.CurrentConfigurations.VerboseMode And Constants.CurrentConfigurations.EnableAnimations) Then Return False
+        Return True
+    End Function
 End Class

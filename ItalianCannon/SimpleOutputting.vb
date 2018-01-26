@@ -2,8 +2,8 @@
 ''' Simple output framework(no)(
 ''' </summary>
 Public Module SOPT
-    Public dpreColor As ConsoleColor
-    Public dbakColor As ConsoleColor
+    Public dpreColor As ConsoleColor = Console.ForegroundColor
+    Public dbakColor As ConsoleColor = Console.BackgroundColor
     ''' <summary>
     ''' Output something with prefix added.
     ''' </summary>
@@ -11,9 +11,9 @@ Public Module SOPT
         'Combination structure:
         '[TIME][LEVEL][MODULE]: text
         '
-        If Constants.CurrentCommandLine.VerboseMode Then Exit Sub
         If IgnoreAnimations = False Then
-            If Constants.CurrentCommandLine.AnimationsEnabled Then Exit Sub
+            If Constants.CurrentConfigurations.VerboseMode Then Exit Sub
+            If Constants.CurrentConfigurations.EnableAnimations Then Exit Sub
         End If
 
         Dim timeStr As String = GetTimePrefix() '[TIME] prefix, [] included.
@@ -47,7 +47,7 @@ Public Module SOPT
 
         'Apply color and output
         If colorEnabled Then
-            If Not Constants.CurrentCommandLine.DisableColor Then
+            If Constants.CurrentConfigurations.EnableColors Then
                 Console.BackgroundColor = bakColor
                 Console.ForegroundColor = preColor
             End If
@@ -65,7 +65,7 @@ Public Module SOPT
 
         'Reverse color changes.
         If colorEnabled Then
-            If Not Constants.CurrentCommandLine.DisableColor Then
+            If Constants.CurrentConfigurations.EnableColors Then
                 Console.BackgroundColor = dbakColor
                 Console.ForegroundColor = dpreColor
             End If

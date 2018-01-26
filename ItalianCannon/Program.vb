@@ -2,30 +2,14 @@ Imports System.Security.Cryptography.X509Certificates
 
 Module Program
     Sub Main(args As String())
-        'Arguments specified
-        ResolveArguments(args)
-            'Read resolved arguments
-            If Constants.CurrentCommandLine.GenConf Then
-                Configurations.Initiate()
-                Environment.Exit(0)
-            End If
-        If Constants.CurrentCommandLine.DisplayHelp Then
-            Console.WriteLine(Constants.CommandLineHelp)
-            Environment.Exit(0)
-        End If
-        'Proceed other stuff.
-        If Not Constants.CurrentCommandLine.VerboseMode Then Console.WriteLine(Constants.ASCIIART)
+        Configurations.Initiate()
+        Console.WriteLine(Constants.ASCIIART)
         Out("ItalianCannon version " & Constants.AppVer, , , False)
         Out("Initiating color profiles...", , , False)
         dpreColor = Console.ForegroundColor
         dbakColor = Console.BackgroundColor
-        Configurations.Initiate()
-        'Apply -c.
-        If Constants.CurrentCommandLine.NoSingleThrLimit Then
-            Constants.CurrentConfigurations.MaxRequestsPerThread = 0
-        End If
-        'Apply -a
-        If Constants.CurrentCommandLine.AnimationsEnabled Then
+        'Apply animations
+        If Constants.CurrentConfigurations.EnableAnimations Then
             Dim thrAnimations As New Threading.Thread(AddressOf ThreadAnimations)
             thrAnimations.Start()
             Dim thrSpeed As New Threading.Thread(AddressOf ThreadSpeedCalc)
@@ -85,7 +69,7 @@ Read:
             i += 1
         Loop
         Out("Max requests limit exceeded. Stopped.", Constants.SW.Elapsed.ToString & "/" & Constants.CurrentConfigurations.MaxRequestsPerThread & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
-        If Constants.CurrentCommandLine.AnimationsEnabled Then Constants.ThrId -= 1
+        If Constants.CurrentConfigurations.EnableAnimations Then Constants.ThrId -= 1
     End Sub
 
     Sub ThreadSpeedCalc()
@@ -131,7 +115,7 @@ Read:
             Dim sb5 As String = "[MAX" & max & "]"
             Dim sb6 As String = Constants.DLSpeed
             Dim sb7 As String = ""
-            Dim sb8 As String = "     " 'Clearing.
+            Dim sb8 As String = "          " 'Clearing.
             If Constants.ThrId = 0 Then
                 sb7 = "[NO THREADS ALIVE]"
                 sb0 = "[!]"
@@ -235,43 +219,6 @@ Read:
                 Return "[          ]"
         End Select
     End Function
-
-    Sub ResolveArguments(args As String())
-        Dim fullArgs As String = ""
-        For Each s As String In args
-            fullArgs &= s & " "
-        Next
-        If fullArgs.ToLower().Contains("-v") Then
-            Constants.CurrentCommandLine.VerboseMode = True
-        Else
-            Constants.CurrentCommandLine.VerboseMode = False
-        End If
-        If fullArgs.ToLower().Contains("-c") Then
-            Constants.CurrentCommandLine.NoSingleThrLimit = True
-        Else
-            Constants.CurrentCommandLine.NoSingleThrLimit = False
-        End If
-        If fullArgs.ToLower().Contains("--genconf") Then
-            Constants.CurrentCommandLine.GenConf = True
-        Else
-            Constants.CurrentCommandLine.GenConf = False
-        End If
-        If fullArgs.ToLower().Contains("--help") Then
-            Constants.CurrentCommandLine.DisplayHelp = True
-        Else
-            Constants.CurrentCommandLine.DisplayHelp = False
-        End If
-        If fullArgs.ToLower().Contains("-g") Then
-            Constants.CurrentCommandLine.DisableColor = True
-        Else
-            Constants.CurrentCommandLine.DisableColor = False
-        End If
-        If fullArgs.ToLower().Contains("-a") Then
-            Constants.CurrentCommandLine.AnimationsEnabled = True
-        Else
-            Constants.CurrentCommandLine.AnimationsEnabled = False
-        End If
-    End Sub
 
     Function JudgeSizeUnit(Size As Double) As String
         Dim SizeUnit As String = "B"

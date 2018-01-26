@@ -46,15 +46,26 @@ Details could be found below.
 
 # Configurations
 
-```
+```json
 {
-  "Note": "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry.",
+  "Note": "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs",
   "TeaCupTarget": "https://www.baidu.com",
   "Threads": 1,
   "IntervalPerThread": 500,
   "MaxRequestsPerThread": 1000,
   "UserAgent": "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33",
-  "AppearsToBeDefault": true
+  "AppearsToBeDefault": true,
+  "DisableSSLValidation": false,
+  "IgnoreHTTPError": false,
+  "ExtraHTTPHeaders": [
+    {
+      "HType": 10,
+      "Content": "GET"
+    }
+  ],
+  "EnableAnimations": false,
+  "EnableColors": true,
+  "VerboseMode": false
 }
 ```
 
@@ -67,23 +78,11 @@ Details could be found below.
 | `MaxRequestsPerThread` | Maximum request count of each thread. |
 | `UserAgent` | User agent. |
 | `AppearsToBeDefault` | MUST be edited to false. |
+| `DisableSSLValidation` | Disables the SSL Certificate Validation. |
+| `IgnoreHTTPError` | Ignore HTTP 4xx/5xx errors. |
+| `ExtraHTTPHeaders` | Extra HTTP Headers sent along with requests. |
+| `EnableAnimations` | Enable animations to get a direct view of status and statistics. |
+| `EnableColors` | Enables colored outputs. |
+| `VerboseMode` | Disable most info outputs. |
 
-# CLI options
-
-```
-  -v           Silent mode, outputs nothing.
-                 *-a, --help arguments will ignore this option.
-  -c           Ignore per-thread request limit.
-                 *Equals to setting 'MaxRequestsPerThread = 0'
-  -g           Disable colorized output.
-  -a           Enable animations.
-                 *Will ignore -v and -g options, even though set.
-                 *This option will ignore per-thread outputs.
-  --help       Display help information, and exit.
-                 *-v option will be ignored.
-  --genconf    Generate configurations file, and exit.
-                 *Unless no configurations file found or configurations file is corrupted, no change will be applied.
-                 *Its priority is higher than --help option.
-```
-
- All CLI options were not case-sensitive.
+*Note: For helps of ExtraHTTPHeaders option, refer to default configurations and you can find HType Codes in [Microsoft Repository](https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs).*
