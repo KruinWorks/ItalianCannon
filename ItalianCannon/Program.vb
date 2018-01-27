@@ -76,11 +76,11 @@ Read:
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
-				Using client As New Net.WebClient()
+                Using client As New Net.WebClient()
                     client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
                     For Each tHeader As Configurations.Header In Constants.CurrentConfigurations.ExtraHTTPHeaders
-	                    client.Headers.Add(tHeader.HType, tHeader.Content)
-					Next
+                        client.Headers.Add(tHeader.HType, tHeader.Content)
+                    Next
                     Dim Size As Long = client.DownloadData(TeaCupTarget).Length
                     Constants.TotalDownloaded += Size
                 End Using
@@ -98,7 +98,7 @@ Read:
                 End If
                 Constants.Total += 1
                 Out("REQ HOK: HTTP/" & RCode, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
-			Catch ex As Exception
+            Catch ex As Exception
                 Constants.TotalFail += 1
                 Out("REQ ERR: " & ex.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
             End Try
