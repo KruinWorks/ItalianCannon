@@ -22,7 +22,7 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' <summary>
     ''' Application version
     ''' </summary>
-    Public Const AppVer As String = "1.0.6-rs-b24"
+    Public Const AppVer As String = "1.0.6-rs-b27"
     ''' <summary>
     ''' Appliation configuration file's name.
     ''' </summary>
@@ -68,4 +68,14 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     ''' <returns></returns>
     Public Shared Property DLSpeed As String = "[?]"
+    ''' <summary>
+    ''' Oops
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property TeaCupTarget As String
+    ''' <summary>
+    ''' Tells the thread to run or not
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property ThreadsReady As Boolean = False
 End Class

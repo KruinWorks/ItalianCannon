@@ -1,8 +1,7 @@
 ﻿Public Class Configurations
     Public Class ConfObj
         Public Note As String
-        Public TeaCupTarget As String
-        Public Threads As Integer
+        Public TeaCupTargets As List(Of AtkUrl)
         Public IntervalPerThread As Integer
         Public MaxRequestsPerThread As Long
         Public UserAgent As String
@@ -13,22 +12,29 @@
         Public EnableAnimations As Boolean
         Public EnableColors As Boolean
         Public VerboseMode As Boolean
+        Public RandomRequestType As Boolean 
+        Public RandomRequestTypes As List(Of String)
         Sub New()
             Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs"
-            TeaCupTarget = "https://www.baidu.com"
-            Threads = 1
             IntervalPerThread = 500
             MaxRequestsPerThread = 1000
             UserAgent = "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33"
             AppearsToBeDefault = True
             DisableSSLValidation = False
             IgnoreHTTPError = False
+            Dim SampleTCTCol As New List(Of AtkUrl)
+            SampleTCTCol.Add(New AtkUrl)
+            TeaCupTargets = SampleTCTCol
             Dim SampleHeaderCol As New List(Of Header)
             SampleHeaderCol.Add(New Header)
             ExtraHTTPHeaders = SampleHeaderCol
             EnableAnimations = False
             EnableColors = True
             VerboseMode = False
+            RandomRequestType = False
+            Dim SampleRRType As New List(Of String)
+            SampleRRType.Add("GET")
+            RandomRequestTypes = SampleRRType
         End Sub
     End Class
 
@@ -38,6 +44,15 @@
         Sub New()
             HType = System.Net.HttpRequestHeader.Allow
             Content = "GET"
+        End Sub
+    End Class
+
+    Public Class AtkUrl
+        Public Url As String
+        Public Threads As Integer
+        Sub New()
+            Url = "https://www.baidu.com"
+            Threads = 1
         End Sub
     End Class
 
@@ -83,6 +98,11 @@
     Public Shared Sub ReadConf()
         Dim settingsText As String = IO.File.ReadAllText(Constants.ConfFile)
         Constants.CurrentConfigurations = Newtonsoft.Json.JsonConvert.DeserializeObject(Of ConfObj)(settingsText)
+        With Constants.CurrentConfigurations
+            .TeaCupTargets.RemoveAt(0)
+            .ExtraHTTPHeaders.RemoveAt(0)
+            .RandomRequestTypes.RemoveAt(0)
+        End With
     End Sub
 
     Public Shared Sub WaitEdit()

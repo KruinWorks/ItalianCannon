@@ -16,13 +16,46 @@ Module Program
             thrSpeed.Start()
         End If
         'Ignore invalid SSL Certificates.
-        If Constants.CurrentConfigurations.DisableSSLValidation Then System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
-        Out("Starting threads... Your current threads number was " & Constants.CurrentConfigurations.Threads & ".")
-        Constants.SW.Start()
-        For i = 1 To Constants.CurrentConfigurations.Threads
-            Dim thread As New Threading.Thread(AddressOf ThreadRun)
-            thread.Start()
+        If Constants.CurrentConfigurations.DisableSSLValidation Then
+            System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
+            Out("SSL Certificate Validation has been disabled.")
+        End If
+        Dim TotalThreads As Integer = 0
+        For Each AU As Configurations.AtkUrl In Constants.CurrentConfigurations.TeaCupTargets
+            TotalThreads += AU.Threads
         Next
+        Out("Starting threads... Your current threads number (total) was " & TotalThreads & ".", "AU")
+        Constants.SW.Start()
+        'Start for each AtkUrls.
+        If Constants.CurrentConfigurations.TeaCupTargets.Count = 0 Then
+            Out("NO URL SPECIFIED!", "AU", LogLevels.EXCEPTION, , True)
+            Environment.Exit(1)
+        End If
+        If Constants.CurrentConfigurations.TeaCupTargets.Count = 1 Then
+            'Single URL Mode
+            Dim AU As Configurations.AtkUrl = Constants.CurrentConfigurations.TeaCupTargets(0)
+            Constants.TeaCupTarget = AU.Url 'Update url to pass to threads
+            For i = 1 To AU.Threads
+                Dim thread As New Threading.Thread(AddressOf ThreadRun)
+                thread.Start()
+            Next
+            Threading.Thread.Sleep(500)
+        Else
+            Out("Multi-URL mode enabled.", "AU")
+            For Each AU As Configurations.AtkUrl In Constants.CurrentConfigurations.TeaCupTargets
+                Threading.Thread.Sleep(500) 'Wait cooldown.
+                Out("===== TID range BEGINS at " & Constants.ThrId & " for URL: " & AU.Url)
+                Constants.TeaCupTarget = AU.Url 'Update url to pass to threads
+                For i = 1 To AU.Threads
+                    Dim thread As New Threading.Thread(AddressOf ThreadRun)
+                    thread.Start()
+                Next
+                Threading.Thread.Sleep(500) 'Wait cooldown.
+                Out("===== TID range ENDS at " & Constants.ThrId & " for URL: " & AU.Url)
+            Next
+        End If
+        Out("Dispatching READY signal...")
+        Constants.ThreadsReady = True
         Dim input As String = ""
         Out("Started. Type 'exit' to stop.")
 Read:
@@ -35,7 +68,11 @@ Read:
     Sub ThreadRun()
         Constants.ThrId += 1
         Dim ThrId As Integer = Constants.ThrId
-        Out("Starting...", "THR" & ThrId)
+        Dim TeaCupTarget As String = Constants.TeaCupTarget
+        Out("Starting... / URL: " & TeaCupTarget, "THR" & ThrId)
+        While(Not Constants.ThreadsReady)
+            Threading.Thread.Sleep(100)
+        End While
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
@@ -44,7 +81,7 @@ Read:
                     For Each tHeader As Configurations.Header In Constants.CurrentConfigurations.ExtraHTTPHeaders
 	                    client.Headers.Add(tHeader.HType, tHeader.Content)
 					Next
-                    Dim Size As Long = client.DownloadData(Constants.CurrentConfigurations.TeaCupTarget).Length
+                    Dim Size As Long = client.DownloadData(TeaCupTarget).Length
                     Constants.TotalDownloaded += Size
                 End Using
                 Constants.Total += 1
@@ -90,6 +127,10 @@ Read:
         '[###       ][00:00:00.000000][500THR][100TS/1FL][MAX0]
         Dim count As UInt64 = 0
         Dim prevLength As Short = 0
+        Dim TotalThreads As Integer = 0
+        For Each AU As Configurations.AtkUrl In Constants.CurrentConfigurations.TeaCupTargets
+            TotalThreads += AU.Threads
+        Next
         Console.Write("Starting...")
         Threading.Thread.Sleep(1000)
         For i = 1 To 11 Step 1
@@ -110,7 +151,7 @@ Read:
             Dim sb0 As String = ""
             Dim sb1 As String = GetAnimationChar(count Mod 13)
             Dim sb2 As String = "[" & Constants.SW.Elapsed.ToString & "]"
-            Dim sb3 As String = "[" & Constants.ThrId & "/" & Constants.CurrentConfigurations.Threads & "THR]"
+            Dim sb3 As String = "[" & Constants.ThrId & "/" & TotalThreads & "THR]"
             Dim sb4 As String = "[" & Constants.Total & "TS/" & Constants.TotalFail & "FL]"
             Dim sb5 As String = "[MAX" & max & "]"
             Dim sb6 As String = Constants.DLSpeed
