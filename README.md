@@ -14,7 +14,7 @@ Supported OS: [See Microsoft Official](https://github.com/dotnet/core/blob/maste
 
 *(Suitable for RHEL, CentOS, Oracle Linux, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, SLES.)*
 
-Configure .NET Core SDK.
+Set up the .NET Core SDK.
 
 Details could be found on [Microsoft Official](https://www.microsoft.com/net).
 
@@ -25,6 +25,10 @@ Get application source code:
 Enter project directory: 
 
 `cd ./ItalianCannon/ItalianCannon`
+
+Restore NuGet packages:
+
+`dotnet restore`
 
 Just run `dotnet run` directly and... There you go!
 
@@ -49,8 +53,12 @@ Details could be found below.
 ```json
 {
   "Note": "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs",
-  "TeaCupTarget": "https://www.baidu.com",
-  "Threads": 1,
+  "TeaCupTargets": [
+    {
+      "Url": "https://www.baidu.com",
+      "Threads": 1
+    }
+  ],
   "IntervalPerThread": 500,
   "MaxRequestsPerThread": 1000,
   "UserAgent": "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33",
@@ -65,7 +73,12 @@ Details could be found below.
   ],
   "EnableAnimations": false,
   "EnableColors": true,
-  "VerboseMode": false
+  "VerboseMode": false,
+  "RandomPOST": false,
+  "RandomPOSTRate": 1,
+  "RandomPOSTLength": 0,
+  "RandomHEAD": false,
+  "RandomHEADRate": 1
 }
 ```
 
@@ -84,5 +97,10 @@ Details could be found below.
 | `EnableAnimations` | Enable animations to get a direct view of status and statistics. |
 | `EnableColors` | Enables colored outputs. |
 | `VerboseMode` | Disable most info outputs. |
+| `RandomPOST` | Send `POST` requests randomly. |
+| `RandomPOSTRate` | The probability of sending `POST` requests. (0 - 100) |
+| `RandomPOSTLength` | Data length of `POST` requests. |
+| `RandomHEAD` | Send `HEAD` requests randomly. |
+| `RandomHEADRate` | The probability of sending `HEAD` requests. (0 - 100) |
 
 *Note: For helps of ExtraHTTPHeaders option, refer to default configurations and you can find HType Codes in [Microsoft Repository](https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs).*

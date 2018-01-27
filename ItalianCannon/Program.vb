@@ -15,6 +15,14 @@ Module Program
             Dim thrSpeed As New Threading.Thread(AddressOf ThreadSpeedCalc)
             thrSpeed.Start()
         End If
+        'Generate random post data.
+        If Constants.CurrentConfigurations.RandomPOST Then
+            Out("Generating random POST data (" & Constants.CurrentConfigurations.RandomPOSTLength & "-bytes) ...")
+            Dim CharPicker As New Random()
+            For i = 0 To Constants.CurrentConfigurations.RandomPOSTLength
+                Constants.RandomPOSTData &= Convert.ToChar(CharPicker.Next(32, 126))
+            Next
+        End If
         'Ignore invalid SSL Certificates.
         If Constants.CurrentConfigurations.DisableSSLValidation Then
             System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
@@ -76,20 +84,39 @@ Read:
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
+                Dim HITRequest As String = "GET"
+                'Random HEAD
+                If (Constants.CurrentConfigurations.RandomHEAD And RandomHIT(Constants.CurrentConfigurations.RandomHEADRate)) Then
+                    'Send HEAD Request and jump out.
+                    Dim TReq As System.Net.WebRequest = System.Net.WebRequest.Create(New Uri(TeaCupTarget))
+                    TReq.Method = "HEAD"
+                    TReq.GetResponse()
+                    Constants.Total += 1
+                    Out("HEAD OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
+                    Exit Try
+                End If
                 Using client As New Net.WebClient()
                     client.Headers.Add(Net.HttpRequestHeader.UserAgent, Constants.CurrentConfigurations.UserAgent)
                     For Each tHeader As Configurations.Header In Constants.CurrentConfigurations.ExtraHTTPHeaders
                         client.Headers.Add(tHeader.HType, tHeader.Content)
                     Next
-                    Dim Size As Long = client.DownloadData(TeaCupTarget).Length
+                    'Random POST
+                    Dim Size As Long
+                    If (Constants.CurrentConfigurations.RandomPOST And RandomHIT(Constants.CurrentConfigurations.RandomPOSTRate)) Then
+                        HITRequest = "POST"
+                        Size = Constants.CurrentConfigurations.RandomPOSTLength
+                        client.UploadData(TeaCupTarget, System.Text.Encoding.UTF8.GetBytes(Constants.RandomPOSTData))
+                    Else
+                        Size = client.DownloadData(TeaCupTarget).Length
+                    End If
                     Constants.TotalDownloaded += Size
                 End Using
                 Constants.Total += 1
-                Out("REQ OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
+                Out(HITRequest & " OK", Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
             Catch sEx As System.Net.WebException 'Proceed server-side errors (4xx / 5xx)
                 If Constants.CurrentConfigurations.IgnoreHTTPError = False Then
                     Constants.TotalFail += 1
-                    Out("REQ ERR: " & sEx.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
+                    Out("GET ERR: " & sEx.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
                     Exit Try
                 End If
                 Dim RCode As Short
@@ -97,7 +124,7 @@ Read:
                     RCode = CType(sEx.Response, System.Net.HttpWebResponse).StatusCode
                 End If
                 Constants.Total += 1
-                Out("REQ HOK: HTTP/" & RCode, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
+                Out("GET NG: HTTP/" & RCode, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId)
             Catch ex As Exception
                 Constants.TotalFail += 1
                 Out("REQ ERR: " & ex.Message, Constants.SW.Elapsed.ToString & "/" & i & "thr./" & Constants.Total & "ts" & "/THR" & ThrId, LogLevels.EXCEPTION)
@@ -293,5 +320,14 @@ Read:
     'Callback of ignorance of invalid ssl certificates.
     Function FakeCertCallBack(ByVal Sender As Object, ByVal Cert As X509Certificate, ByVal Chain As X509Chain, ByVal [error] As System.Net.Security.SslPolicyErrors) As Boolean
         Return True
+    End Function
+
+    Function RandomHIT(Probability As Byte) As Boolean
+        Dim Result As Short = (New Random).Next(0, 101)
+        If (Result > 0 And Result <= Probability) Then
+            Return True
+        Else
+            Return False
+        End If
     End Function
 End Module

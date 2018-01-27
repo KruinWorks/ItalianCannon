@@ -12,8 +12,11 @@
         Public EnableAnimations As Boolean
         Public EnableColors As Boolean
         Public VerboseMode As Boolean
-        Public RandomRequestType As Boolean 
-        Public RandomRequestTypes As List(Of String)
+        Public RandomPOST As Boolean
+        Public RandomPOSTRate As Byte
+        Public RandomPOSTLength As Long
+        Public RandomHEAD As Boolean
+        Public RandomHEADRate As Byte
         Sub New()
             Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs"
             IntervalPerThread = 500
@@ -31,10 +34,11 @@
             EnableAnimations = False
             EnableColors = True
             VerboseMode = False
-            RandomRequestType = False
-            Dim SampleRRType As New List(Of String)
-            SampleRRType.Add("GET")
-            RandomRequestTypes = SampleRRType
+            RandomPOST = False
+            RandomPOSTRate = 1
+            RandomPOSTLength = 128
+            RandomHEAD = False
+            RandomHEADRate = 1
         End Sub
     End Class
 
@@ -101,7 +105,6 @@
         With Constants.CurrentConfigurations
             .TeaCupTargets.RemoveAt(0)
             .ExtraHTTPHeaders.RemoveAt(0)
-            .RandomRequestTypes.RemoveAt(0)
         End With
     End Sub
 

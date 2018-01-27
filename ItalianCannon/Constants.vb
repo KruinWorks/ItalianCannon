@@ -78,4 +78,9 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' </summary>
     ''' <returns></returns>
     Public Shared Property ThreadsReady As Boolean = False
+    ''' <summary>
+    ''' Content to be served when posting.
+    ''' </summary>
+    ''' <returns></returns>
+    Public Shared Property RandomPOSTData As String
 End Class
