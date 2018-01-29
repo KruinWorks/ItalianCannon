@@ -3,9 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Authors>Elepover</Authors>
-    <Company>KruinWorks</Company>
-    <Version>1.0.5-rs-b19</Version>
   </PropertyGroup>
 
   <ItemGroup>
