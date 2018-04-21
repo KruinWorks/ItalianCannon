@@ -50,57 +50,6 @@ Details could be found below.
 
 # Configurations
 
-```json
-{
-  "Note": "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs",
-  "TeaCupTargets": [
-    {
-      "Url": "https://www.baidu.com",
-      "Threads": 1
-    }
-  ],
-  "IntervalPerThread": 500,
-  "MaxRequestsPerThread": 1000,
-  "UserAgent": "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33",
-  "AppearsToBeDefault": true,
-  "DisableSSLValidation": false,
-  "IgnoreHTTPError": false,
-  "ExtraHTTPHeaders": [
-    {
-      "HType": 10,
-      "Content": "GET"
-    }
-  ],
-  "EnableAnimations": false,
-  "EnableColors": true,
-  "VerboseMode": false,
-  "RandomPOST": false,
-  "RandomPOSTRate": 1,
-  "RandomPOSTLength": 0,
-  "RandomHEAD": false,
-  "RandomHEADRate": 1
-}
-```
+See https://see.wtf/6nhoB for further information.
 
-| Name | Description |
-| :----- | -----: |
-| `Note` | The description. Doesn't have any use. |
-| `TeaCupTarget` | Request target. |
-| `Threads` | Quantity of threads. |
-| `IntervalPerThread` | Request interval of each thread. |
-| `MaxRequestsPerThread` | Maximum request count of each thread. |
-| `UserAgent` | User agent. |
-| `AppearsToBeDefault` | MUST be edited to false. |
-| `DisableSSLValidation` | Disables the SSL Certificate Validation. |
-| `IgnoreHTTPError` | Ignore HTTP 4xx/5xx errors. |
-| `ExtraHTTPHeaders` | Extra HTTP Headers sent along with requests. |
-| `EnableAnimations` | Enable animations to get a direct view of status and statistics. |
-| `EnableColors` | Enables colored outputs. |
-| `VerboseMode` | Disable most info outputs. |
-| `RandomPOST` | Send `POST` requests randomly. |
-| `RandomPOSTRate` | The probability of sending `POST` requests. (0 - 100) |
-| `RandomPOSTLength` | Data length of `POST` requests. |
-| `RandomHEAD` | Send `HEAD` requests randomly. |
-| `RandomHEADRate` | The probability of sending `HEAD` requests. (0 - 100) |
-
-*Note: For helps of ExtraHTTPHeaders option, refer to default configurations and you can find HType Codes in [Microsoft Repository](https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs).*
+You can run ItalianCannon with `--setup` argument to activate Setup Wizard.

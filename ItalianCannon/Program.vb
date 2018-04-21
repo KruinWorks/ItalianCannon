@@ -2,13 +2,42 @@ Imports System.Security.Cryptography.X509Certificates
 
 Module Program
     Sub Main(args As String())
-        Configurations.Initiate()
-        Console.WriteLine(Constants.ASCIIART)
-        Out("ItalianCannon version " & Constants.AppVer, , , False)
+        'Prevent output errors.
+        Constants.CurrentConfigurations = New Configurations.ConfObj()
+        With Constants.CurrentConfigurations
+            .TeaCupTargets.RemoveAt(0)
+            .ExtraHTTPHeaders.RemoveAt(0)
+            .EnableAnimations = False
+            .SilentMode = False
+        End With
+
+        'Setup colors for all outputs.
         Out("Initiating color profiles...", , , False)
         dpreColor = Console.ForegroundColor
         dbakColor = Console.BackgroundColor
-        'Apply animations
+
+        'Setup wizard.
+        For Each Arg As String In args
+            If Arg.ToLower = "--setup" Then
+                Out("Starting Setup Wizard...")
+                Try
+                    RunSetup()
+                Catch ex As Exception
+                    Out("An error occurred in Setup Wizard: " & "",, LogLevels.EXCEPTION)
+                    Environment.Exit(1)
+                End Try
+                Out("Setup Wizard complete! Restart ItalianCannon to confirm the configurations.")
+                Environment.Exit(0)
+            End If
+        Next
+
+        'Default startup.
+        Configurations.Initiate()
+        Console.WriteLine(Constants.ASCIIART)
+        Out("ItalianCannon version " & Constants.AppVer, , , False)
+        'dotnet run performance notification.
+        Out("Notice: Using 'dotnet run' may significantly slow ItalianCannon down, for further information, see https://see.wtf/OtImc")
+        'Apply animations.
         If Constants.CurrentConfigurations.EnableAnimations Then
             Dim thrAnimations As New Threading.Thread(AddressOf ThreadAnimations)
             thrAnimations.Start()
@@ -40,9 +69,9 @@ Module Program
             Environment.Exit(1)
         End If
         If Constants.CurrentConfigurations.TeaCupTargets.Count = 1 Then
-            'Single URL Mode
+            'Single URL Mode.
             Dim AU As Configurations.AtkUrl = Constants.CurrentConfigurations.TeaCupTargets(0)
-            Constants.TeaCupTarget = AU.Url 'Update url to pass to threads
+            Constants.TeaCupTarget = AU.Url 'Update url to pass to threads.
             For i = 1 To AU.Threads
                 Dim thread As New Threading.Thread(AddressOf ThreadRun)
                 thread.Start()
@@ -53,7 +82,7 @@ Module Program
             For Each AU As Configurations.AtkUrl In Constants.CurrentConfigurations.TeaCupTargets
                 Threading.Thread.Sleep(500) 'Wait cooldown.
                 Out("===== TID range BEGINS at " & Constants.ThrId & " for URL: " & AU.Url)
-                Constants.TeaCupTarget = AU.Url 'Update url to pass to threads
+                Constants.TeaCupTarget = AU.Url 'Update url to pass to threads.
                 For i = 1 To AU.Threads
                     Dim thread As New Threading.Thread(AddressOf ThreadRun)
                     thread.Start()
@@ -85,7 +114,7 @@ Read:
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
             Try
                 Dim HITRequest As String = "GET"
-                'Random HEAD
+                'Random HEAD.
                 If (Constants.CurrentConfigurations.RandomHEAD And RandomHIT(Constants.CurrentConfigurations.RandomHEADRate)) Then
                     'Send HEAD Request and jump out.
                     Dim TReq As System.Net.WebRequest = System.Net.WebRequest.Create(New Uri(TeaCupTarget))
@@ -330,4 +359,79 @@ Read:
             Return False
         End If
     End Function
+
+    Sub RunSetup()
+        Out("Welcome to ItalianCannon!", "SETUP")
+        Dim Conf As New Configurations.ConfObj()
+        With Conf
+            .TeaCupTargets.RemoveAt(0)
+            .ExtraHTTPHeaders.RemoveAt(0)
+        End With
+        'Adding sites.
+AddSite:
+        Out(":: Which site would you like to test?", "SETUP")
+        Try
+            Dim Site As New Uri(Console.ReadLine())
+            Out(":: How many threads would you like to start with this site? [5]", "SETUP")
+            Dim Threads As UInt32
+            Try
+                Threads = Console.ReadLine()
+                If Threads = 0 Then Throw New ArgumentException("0 is now allowed.")
+                Out("Setting threads to " & Threads & ".", "SETUP")
+            Catch ex As Exception
+                Out("Setting threads to 5.", "SETUP", LogLevels.WARN)
+                Threads = 5
+            End Try
+            Conf.TeaCupTargets.Add(New Configurations.AtkUrl() With {.Url = Site.ToString(), .Threads = Threads})
+            Out("Added! Would you like to add another URL? [true/FALSE]", "SETUP")
+            Dim ContinueAdding As Boolean = False
+            Try
+                ContinueAdding = Console.ReadLine()
+                If ContinueAdding Then GoTo AddSite
+            Catch ex As Exception
+            End Try
+        Catch ex As Exception
+            Out("Error parsing URL, are you using the correct format? (Must begin with 'http://' or 'https://')", "SETUP", LogLevels.EXCEPTION)
+            GoTo AddSite
+        End Try
+
+        Out(":: How many requests should each thread make? [1000]", "SETUP")
+        Dim MaximumReq As Integer = 1000
+        Try
+            MaximumReq = Console.ReadLine()
+            Out("Setting requests limit to " & MaximumReq & ".", "SETUP")
+        Catch ex As Exception
+            Out("Setting requests limit to 1000", "SETUP", LogLevels.WARN)
+        End Try
+        Conf.MaxRequestsPerThread = MaximumReq
+
+        Out(":: Do you want to disable SSL certificate validation? [true/FALSE]", "SETUP")
+        Dim DisableSSLValidation As Boolean = False
+        Try
+            DisableSSLValidation = Console.ReadLine()
+        Catch ex As Exception
+        End Try
+        Conf.DisableSSLValidation = DisableSSLValidation
+
+        Out(":: Ignore server errors? (Like 4xx and 5xx, and other non-1xx/2xx/3xx status codes.) [true/FALSE]", "SETUP")
+        Dim IgnoreServerError As Boolean = False
+        Try
+            IgnoreServerError = Console.ReadLine()
+        Catch ex As Exception
+        End Try
+        Conf.IgnoreHTTPError = IgnoreServerError
+        Conf.AppearsToBeDefault = False
+
+        Out("Saving configurations...", "SETUP")
+        Constants.CurrentConfigurations = Conf
+        Configurations.SaveConf()
+
+        Out("=================================================================", "SETUP")
+        Out("Basic configurations are finished! You can run ItalianCannon now.", "SETUP")
+        Out("For further configurations, see https://see.wtf/6nhoB", "SETUP")
+        Out("To improve performance, see https://see.wtf/OtImc", "SETUP")
+        Out("Thanks for using!", "SETUP")
+        Out("=================================================================", "SETUP")
+
+    End Sub
 End Module

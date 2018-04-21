@@ -11,14 +11,14 @@
         Public ExtraHTTPHeaders As List(Of Header)
         Public EnableAnimations As Boolean
         Public EnableColors As Boolean
-        Public VerboseMode As Boolean
+        Public SilentMode As Boolean
         Public RandomPOST As Boolean
         Public RandomPOSTRate As Byte
         Public RandomPOSTLength As Long
         Public RandomHEAD As Boolean
         Public RandomHEADRate As Byte
         Sub New()
-            Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://github.com/dotnet/corefx/blob/master/src/System.Net.WebHeaderCollection/src/System/Net/HttpRequestHeader.cs"
+            Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://see.wtf/O5vFp"
             IntervalPerThread = 500
             MaxRequestsPerThread = 1000
             UserAgent = "Mozilla/5.0 (Linux) AppleWebKit/888.88 (KHTML, like Gecko) Chrome/66.6.2333.66 Safari/233.33"
@@ -33,7 +33,7 @@
             ExtraHTTPHeaders = SampleHeaderCol
             EnableAnimations = False
             EnableColors = True
-            VerboseMode = False
+            SilentMode = False
             RandomPOST = False
             RandomPOSTRate = 1
             RandomPOSTLength = 128
@@ -55,7 +55,7 @@
         Public Url As String
         Public Threads As Integer
         Sub New()
-            Url = "https://www.baidu.com"
+            Url = "https://www.contoso.com"
             Threads = 1
         End Sub
     End Class
@@ -114,7 +114,7 @@
     End Sub
 
     Public Shared Function CheckConflictConf() As Boolean
-        If (Constants.CurrentConfigurations.VerboseMode And Constants.CurrentConfigurations.EnableAnimations) Then Return False
+        If (Constants.CurrentConfigurations.SilentMode And Constants.CurrentConfigurations.EnableAnimations) Then Return False
         Return True
     End Function
 End Class

@@ -12,7 +12,7 @@ Public Module SOPT
         '[TIME][LEVEL][MODULE]: text
         '
         If IgnoreAnimations = False Then
-            If Constants.CurrentConfigurations.VerboseMode Then Exit Sub
+            If Constants.CurrentConfigurations.SilentMode Then Exit Sub
             If Constants.CurrentConfigurations.EnableAnimations Then Exit Sub
         End If
 
