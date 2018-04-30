@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <Authors>Elepover</Authors>
     <Company>KruinWorks</Company>
-    <Version>1.0.7-rs-b31</Version>
+    <Version>1.0.8-bt-b32</Version>
   </PropertyGroup>
 
   <ItemGroup>

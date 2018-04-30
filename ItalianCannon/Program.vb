@@ -52,6 +52,9 @@ Module Program
                 Constants.RandomPOSTData &= Convert.ToChar(CharPicker.Next(32, 126))
             Next
         End If
+        If Constants.CurrentConfigurations.RandomQuery Then
+            Out("Random query is enabled, this may slow down ItalianCannon.",, LogLevels.WARN)
+        End If
         'Ignore invalid SSL Certificates.
         If Constants.CurrentConfigurations.DisableSSLValidation Then
             System.Net.ServicePointManager.ServerCertificateValidationCallback = New System.Net.Security.RemoteCertificateValidationCallback(AddressOf FakeCertCallBack)
@@ -112,6 +115,9 @@ Read:
         End While
         Dim i As Long = 1
         Do Until i = Constants.CurrentConfigurations.MaxRequestsPerThread
+            If Constants.CurrentConfigurations.RandomQuery Then
+                TeaCupTarget &= GetRandomQuery()
+            End If
             Try
                 Dim HITRequest As String = "GET"
                 'Random HEAD.
@@ -358,6 +364,19 @@ Read:
         Else
             Return False
         End If
+    End Function
+
+    ''' <summary>
+    ''' Get a 5-char query string (6 with ? char).
+    ''' </summary>
+    ''' <returns></returns>
+    Function GetRandomQuery() As String
+        Dim CharPicker As New Random()
+        Dim Returning As String = "?"
+        For i = 1 To 5
+            Returning &= Convert.ToChar(CharPicker.Next(32, 126))
+        Next
+        Return Returning
     End Function
 
     Sub RunSetup()

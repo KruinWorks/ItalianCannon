@@ -22,7 +22,7 @@ _  /    _  __ `/_  __ \_  __ \  __ \_  __ \
     ''' <summary>
     ''' Application version
     ''' </summary>
-    Public Const AppVer As String = "1.0.7-rs-b31"
+    Public Const AppVer As String = "1.0.8-bt-b32"
     ''' <summary>
     ''' Appliation configuration file's name.
     ''' </summary>

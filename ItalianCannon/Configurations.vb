@@ -17,6 +17,7 @@
         Public RandomPOSTLength As Long
         Public RandomHEAD As Boolean
         Public RandomHEADRate As Byte
+        Public RandomQuery As Boolean
         Sub New()
             Note = "Please change 'AppearsToBeDefault' to False after changing settings. ItalianCannon will ignore this configuration entry. For headers help, see https://see.wtf/O5vFp"
             IntervalPerThread = 500
@@ -39,6 +40,7 @@
             RandomPOSTLength = 128
             RandomHEAD = False
             RandomHEADRate = 1
+            RandomQuery = False
         End Sub
     End Class
 
