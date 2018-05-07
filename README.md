@@ -2,7 +2,7 @@
 
 Download pre-compiled package: https://see.wtf/BiMDY
 
-CI: [![AppVeyor Compile Status](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/project/Elepover/italiancannon)
+[![AppVeyor Compile Status](https://ci.appveyor.com/api/projects/status/rnt9jq5w7p0kdepa?svg=true)](https://ci.appveyor.com/project/Elepover/italiancannon)
 
 A simple multithreading web resource request tool. Based on .NET Core.
 
